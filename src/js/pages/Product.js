@@ -302,74 +302,60 @@ function Product() {
   // 미션 7 - 정렬 기능
   // book-sort-chip에 클릭 이벤트 발생 시, data-sort 값에 따라 다르게 필터링을 건다
   // rendorBookItem 함수 중 filter -> sort -> map의 순서로 실행한다
-  //
-  $(".book-sort-chip").addEventListener("click", (e) => {
+  $(".product-card-sort").addEventListener("click", (e) => {
     let bookItems = [];
 
     bookItems = this.books.filter(
       (book) => book.category === this.currentCategory.code
     );
 
-    switch (e.target.id) {
-      case "sort-name":
-        console.log("clicked");
-        e.target.classList.toggle("clicked");
-
-        bookItems
-          .sort((a, b) => a.title.localeCompare(b.title))
-          .map((book) => {
-            return `
-        <li class="book-item">
-          <div class="book-info">
-            <span class="book-name">${book.title}</span>
-            <span class="book-price">₩${book.price.toLocaleString()}</span>
-          </div>
-          <div class="book-actions">
+    // renderBookItem을 filter 제외하고 만들어둘걸...
+    const sortBookItem = (books) => {
+      const bookItems = books
+        .map(
+          (book) => `
+      <li class="book-item">
+        <div class="book-info">
+          <span class="book-name">${book.title}</span>
+          <span class="book-price">₩${book.price.toLocaleString()}</span>
+        </div>
+        <div class="book-actions">
           ${
             book.inStock === false
               ? `<button class="soldout-btn">품절</button>`
               : ""
           }
-            <button class="edit-btn modal-toggle-btn" data-modal-target="editModal">수정</button>
-            <button class="delete-btn">삭제</button>
-          </div>
-        </li>
-      `;
-          })
-          .join("");
+          <button class="edit-btn modal-toggle-btn" data-modal-target="editModal">수정</button>
+          <button class="delete-btn">삭제</button>
+        </div>
+      </li>
+    `
+        )
+        .join("");
 
-        console.log(bookItems);
-        $("#book-list").innerHTML = bookItems;
-        break;
-      case "sort-price":
-        e.target.classList.toggle("clicked");
+      $("#book-list").innerHTML = bookItems;
+      updateBookCount();
+    };
 
-        bookItems
-          .sort((a, b) => a.title.localeCompare(b.title))
-          .map((book) => {
-            return `
-        <li class="book-item">
-          <div class="book-info">
-            <span class="book-name">${book.title}</span>
-            <span class="book-price">₩${book.price.toLocaleString()}</span>
-          </div>
-          <div class="book-actions">
-          ${
-            book.inStock === false
-              ? `<button class="soldout-btn">품절</button>`
-              : ""
-          }
-            <button class="edit-btn modal-toggle-btn" data-modal-target="editModal">수정</button>
-            <button class="delete-btn">삭제</button>
-          </div>
-        </li>
-      `;
-          })
-          .join("");
+    const filtered = this.books.filter(
+      (book) => book.category === this.currentCategory.code
+    );
+    if (e.target.id === "sort-name" || e.target.id === "sort-price") {
+      document.querySelectorAll(".book-sort-chip").forEach((chip) => {
+        chip.classList.remove("clicked");
+      });
 
-        console.log(bookItems);
-        $("#book-list").innerHTML = bookItems;
-        break;
+      if (e.target.id === "sort-name") {
+        e.target.classList.add("clicked");
+        sortBookItem(
+          [...bookItems].sort((a, b) => a.title.localeCompare(b.title))
+        );
+      }
+
+      if (e.target.id === "sort-price") {
+        e.target.classList.add("clicked");
+        sortBookItem([...bookItems].sort((a, b) => b.price - a.price));
+      }
     }
   });
 }
