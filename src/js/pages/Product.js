@@ -248,7 +248,130 @@ function Product() {
     }
   });
 
-  // 미션 6 - 정렬 기능
+  // 미션 6 - 검색 기능
+  // search form submit 이벤트 발생 시, search input 값을 받는다.
+  // this.books 객체 배열 안에 해당 title과 일치하는 항목이 있는지 찾는다. (===)
+  // searchResults 객체 배열에 해당 값들을 넣는다.
+  // 있으면 해당 book-item으로, 없다면 '찾으시는 도서가 없습니다' 문구를 return 한다.
+  // this.currentCategory 객체를 초기화한다.
+  // searchResults.length 결과를 book count innerText로 삽입한다.
+  $("#book-search-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const searchBookName = $("#book-search-input").value;
+    let searchResults = [];
+
+    searchResults = this.books.filter((book) => book.title === searchBookName);
+
+    const bookItems =
+      searchResults.length > 0
+        ? searchResults
+            .map((book) => {
+              return `
+      <li class="book-item">
+        <div class="book-info">
+          <span class="book-name">${book.title}</span>
+          <span class="book-price">₩${book.price.toLocaleString()}</span>
+        </div>
+        <div class="book-actions">
+        ${
+          book.inStock === false
+            ? `<button class="soldout-btn">품절</button>`
+            : ""
+        }
+          <button class="edit-btn modal-toggle-btn" data-modal-target="editModal">수정</button>
+          <button class="delete-btn">삭제</button>
+        </div>
+      </li>
+    `;
+            })
+            .join("")
+        : `<h3>찾으시는 도서가 없습니다.</h3>`;
+
+    $("#book-count").innerText = searchResults.length;
+    $("#book-list").innerHTML = bookItems;
+
+    this.currentCategory = {
+      code: null,
+      name: searchBookName + "에 대한",
+    };
+
+    rendorCategory();
+    $("#book-search-form").reset();
+  });
+
+  // 미션 7 - 정렬 기능
+  // book-sort-chip에 클릭 이벤트 발생 시, data-sort 값에 따라 다르게 필터링을 건다
+  // rendorBookItem 함수 중 filter -> sort -> map의 순서로 실행한다
+  //
+  $(".book-sort-chip").addEventListener("click", (e) => {
+    let bookItems = [];
+
+    bookItems = this.books.filter(
+      (book) => book.category === this.currentCategory.code
+    );
+
+    switch (e.target.id) {
+      case "sort-name":
+        console.log("clicked");
+        e.target.classList.toggle("clicked");
+
+        bookItems
+          .sort((a, b) => a.title.localeCompare(b.title))
+          .map((book) => {
+            return `
+        <li class="book-item">
+          <div class="book-info">
+            <span class="book-name">${book.title}</span>
+            <span class="book-price">₩${book.price.toLocaleString()}</span>
+          </div>
+          <div class="book-actions">
+          ${
+            book.inStock === false
+              ? `<button class="soldout-btn">품절</button>`
+              : ""
+          }
+            <button class="edit-btn modal-toggle-btn" data-modal-target="editModal">수정</button>
+            <button class="delete-btn">삭제</button>
+          </div>
+        </li>
+      `;
+          })
+          .join("");
+
+        console.log(bookItems);
+        $("#book-list").innerHTML = bookItems;
+        break;
+      case "sort-price":
+        e.target.classList.toggle("clicked");
+
+        bookItems
+          .sort((a, b) => a.title.localeCompare(b.title))
+          .map((book) => {
+            return `
+        <li class="book-item">
+          <div class="book-info">
+            <span class="book-name">${book.title}</span>
+            <span class="book-price">₩${book.price.toLocaleString()}</span>
+          </div>
+          <div class="book-actions">
+          ${
+            book.inStock === false
+              ? `<button class="soldout-btn">품절</button>`
+              : ""
+          }
+            <button class="edit-btn modal-toggle-btn" data-modal-target="editModal">수정</button>
+            <button class="delete-btn">삭제</button>
+          </div>
+        </li>
+      `;
+          })
+          .join("");
+
+        console.log(bookItems);
+        $("#book-list").innerHTML = bookItems;
+        break;
+    }
+  });
 }
 
 const product = new Product();
