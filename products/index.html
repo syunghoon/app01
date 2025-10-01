@@ -17,6 +17,18 @@
 
         <!-- 메인 콘텐츠 -->
         <main class="main-content">
+          <!-- 도서 검색 영역 -->
+          <form id="book-search-form" class="book-form">
+            <div class="input-group">
+              <input
+                type="text"
+                id="book-search-input"
+                placeholder="검색할 도서명을 입력하세요."
+                class="book-name-input"
+              />
+            </div>
+            <button type="submit" class="book-submit-btn">검색</button>
+          </form>
           <div class="content-header">
             <h1>도서 상품 관리</h1>
             <p>도서 상품들을 관리합니다.</p>
@@ -24,11 +36,7 @@
 
           <!-- 도서 카테고리 선택 영역 -->
           <div class="category-select">
-            <button
-              type="button"
-              class="category-btn active"
-              data-category-code="it"
-            >
+            <button type="button" class="category-btn" data-category-code="it">
               IT
             </button>
             <button
@@ -58,11 +66,15 @@
           <div class="product-card">
             <div class="product-card-header">
               <h2 class="product-card-title">
-                📖 <span id="book-category-name">IT</span> 도서 관리
+                📖 <span id="book-category-name"></span> 도서 관리
               </h2>
-              <span class="book-count"
-                >총 <span id="book-count">0</span>개</span
-              >
+              <div class="product-card-sort">
+                <div id="book-sort-name">이름순</div>
+                <div id="book-sort-price">가격순</div>
+                <span class="book-count"
+                  >총 <span id="book-count">0</span>개</span
+                >
+              </div>
             </div>
             <form id="book-regist-form" class="book-form">
               <div class="input-group">
